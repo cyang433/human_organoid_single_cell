@@ -56,7 +56,7 @@ ps.gex1 = ps.gex
 ps.sc.time1 = tmeta$time
 ps.sc.ctp1 = data.frame('orig_ctp'=tmeta$WGCNAcluster, 'ctp'=tmeta$ctp)
 ```
-### Step 2: MSMA
+### Step 2: Manifold alignment
 ```R
 algn_res = runMSMA_cor(ps.mat1,ps.mat2)
 #######downstream analysis---not in the main
@@ -75,4 +75,40 @@ sim_dist = 1/(1+pair_dist)
 #############FOR cells+cells similarity bi-clustering#######
 sim_mat = t(sim_dist)
 write.table(sim_mat,file='dist.csv',row.names=T,col.names=T,sep=',',quote=F)
+```
+### Step 3: Use python to bi-cluster
+```
+python biclust.py
+```
+Read clustering results:
+```R
+cls1 = as.vector(unlist(read.table('cls.cells1.csv',sep=',')))
+cls2 = as.vector(unlist(read.table('cls.cells2.csv',sep=',')))
+df2$cls = c(cls1,cls2)
+```
+Re-order clusters for visualization:
+```R
+clsr2 = rep(0,dim(df2)[1])
+clsr2[df2$cls==1]=1
+clsr2[df2$cls==3]=2
+clsr2[df2$cls==4]=3
+clsr2[df2$cls==5]=4
+clsr2[df2$cls==2]=5
+df2$clsr = clsr2
+```
+
+### Step 4: Visualization
+```R
+pdf('human_vs_humanOrg_human2.pdf')
+time.cols = brewer.pal(5,'Set1')
+res = data.frame(df2[df2$data=='sample2',])
+library(plot3D)
+s3d<-scatter3D(x=res[,3],y=res[,4],z=res[,5],col='grey',bg=time.cols[as.numeric(mapvalues(res$clsr,names(table(res$clsr)),c(1:5)))],lwd=1,pch=21,
+colkey=F,theta = 30, phi = 0,cex=1.5,
+xlim=c(min(df2$Val0),max(df2$Val0)),
+ylim=c(min(df2$Val1),max(df2$Val1)),
+zlim=c(min(df2$Val2),max(df2$Val2)))
+legend("top", legend = levels(as.factor(res$data)), pch = c(16, 17),inset = -0.1, xpd = TRUE, horiz = TRUE)
+legend("bottom", legend = levels(as.factor(res$clsr)), col = time.cols[c(1:5)],pch=16,inset = -0.1, xpd = TRUE, horiz = TRUE)
+dev.off()
 ```

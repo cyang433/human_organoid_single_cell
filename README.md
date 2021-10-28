@@ -22,7 +22,10 @@ We use the uploaded code to process the data,including relabel the time manually
 source('process_data.r')
 ```
 Next we start to align.
+
 ### Step 1: Pseudo-cell formation
+
+Unlike bulk analysis, single cell analysis must first construct pseudo cells, because single cells are highly random.
 ```R
 tgex = t(exp1)
 tmeta = sel.meta1

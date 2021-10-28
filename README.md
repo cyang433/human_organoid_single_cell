@@ -12,7 +12,9 @@ source('../src/func.r')
 ```
 ## Demo
 ### Step 0: Data preprocessing
-human(Nowaski,2017) VS organoid(kanton.2019)
+We aligned two data sets, one is the human single cell set, and the other is the organoid single cell set.
+The human single cell set contains single-cell RNA-seq data of 4,261 cells in the human brain between 6-32 PCW,from 48 samples.
+The organoid single cell set contains single-cell RNA-seq of 11048 cells in organoids from human between 0 days to 4 months,from 8 samples.
 ```R
 load('start3.RData')
 human.dxg = unique(unlist(read.table('nowaski.2017.genes')))
@@ -64,6 +66,9 @@ df2=algn_res[[3]]
 df2$time = c(ps.time1,ps.time2)
 df2$ctp = c(ps.ctp1,ps.ctp2)
 df2$name = c(row.names(ps.mat1),row.names(ps.mat2))
+```
+### Step 3: 
+```R
 ########calculate pairwise distances between cells after 2nd MA#####
 pair_dist = apply(df2[df2$data=='sample1',c(3:5)],1,function(x) {
         d = apply(df2[df2$data=='sample2',c(3:5)],1,function(y) eu.dist(x,y))
@@ -76,7 +81,7 @@ sim_dist = 1/(1+pair_dist)
 sim_mat = t(sim_dist)
 write.table(sim_mat,file='dist.csv',row.names=T,col.names=T,sep=',',quote=F)
 ```
-### Step 3: Use python to bi-cluster
+### Step 4: Use python to bi-cluster
 ```
 python biclust.py
 ```
@@ -97,7 +102,7 @@ clsr2[df2$cls==2]=5
 df2$clsr = clsr2
 ```
 
-### Step 4: Visualization
+### Step 5: Visualization
 ```R
 pdf('human_vs_humanOrg_human2.pdf')
 time.cols = brewer.pal(5,'Set1')

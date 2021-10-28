@@ -54,6 +54,7 @@ ps.sc.time1 = tmeta$time
 ps.sc.ctp1 = data.frame('orig_ctp'=tmeta$WGCNAcluster, 'ctp'=tmeta$ctp)
 ```
 ### Step 2: MSMA
+```R
 algn_res = runMSMA_cor(ps.mat1,ps.mat2)
 #######downstream analysis---not in the main
 df2=algn_res[[3]]
@@ -71,3 +72,4 @@ sim_dist = 1/(1+pair_dist)
 #############FOR cells+cells similarity bi-clustering#######
 sim_mat = t(sim_dist)
 write.table(sim_mat,file='dist.csv',row.names=T,col.names=T,sep=',',quote=F)
+```

@@ -67,7 +67,7 @@ df2$time = c(ps.time1,ps.time2)
 df2$ctp = c(ps.ctp1,ps.ctp2)
 df2$name = c(row.names(ps.mat1),row.names(ps.mat2))
 ```
-### Step 3: 
+### Step 3: Generate alignment similarity matrix
 ```R
 ########calculate pairwise distances between cells after 2nd MA#####
 pair_dist = apply(df2[df2$data=='sample1',c(3:5)],1,function(x) {
